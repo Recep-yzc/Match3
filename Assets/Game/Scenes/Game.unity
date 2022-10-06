@@ -390,8 +390,8 @@ GameObject:
   - component: {fileID: 2044317473}
   - component: {fileID: 2044317475}
   - component: {fileID: 2044317472}
-  - component: {fileID: 2044317476}
   - component: {fileID: 2044317477}
+  - component: {fileID: 2044317476}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -412,10 +412,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CellData: {fileID: 11400000, guid: bdace95da3dbfeb41b6a68ef8452ca6e, type: 2}
-  cellActorsVertical:
-    keyData: []
-  cellActorsHorizontal:
-    keyData: []
 --- !u!4 &2044317473
 Transform:
   m_ObjectHideFlags: 0

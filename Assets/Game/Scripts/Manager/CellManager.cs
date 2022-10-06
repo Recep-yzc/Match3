@@ -1,6 +1,5 @@
 using Game;
 using Game.Events;
-using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +18,7 @@ public class CellManager : MonoBehaviour
 
     private List<CellActor> cellActors = new();
     private Dictionary<Vector2, CellActor> cellActorsWithPosition = new();
-    public FloatCellActors cellActorsVertical = new();
-    public FloatCellActors cellActorsHorizontal = new();
+    private FloatCellActors cellActorsVertical = new();
     #endregion
 
     #region Event
@@ -33,6 +31,7 @@ public class CellManager : MonoBehaviour
     {
         Listen(false);
     }
+
     private void Listen(bool status)
     {
         gameEventSystem.SaveEvent(GameEvents.SaveCellActor, status, SaveCellActor);
@@ -49,7 +48,6 @@ public class CellManager : MonoBehaviour
             yield return null;
 
             CalculateAxisList(cellActorsVertical, SnapAxis.X);
-            //CalculateAxisList(cellActorsHorizontal, SnapAxis.Y);
 
             FindCellNeighbor();
 
@@ -134,14 +132,16 @@ public class CellManager : MonoBehaviour
                     {
                         for (int n = 0; n < Codes.neighborV2s.Length; n++)
                         {
-                            if (neighborCellActor.Key == v2 + (Codes.neighborV2s[n] * CellData.CellScale))
+                            Vector2 key = v2 + (Codes.neighborV2s[n] * CellData.CellScale);
+
+                            if (neighborCellActor.Key == key)
                             {
                                 neighborCellActors.Add(neighborCellActor.Value);
+                                break;
                             }
                         }
-
-                        cellActorTemp.FetchNeighborCellActor(neighborCellActors);
-                    }
+                    }     
+                    cellActorTemp.FetchNeighborCellActor(neighborCellActors);             
                 }
             }
         }
@@ -149,7 +149,8 @@ public class CellManager : MonoBehaviour
 
     private List<CellActor> FindClickedCellNeighbor(ref List<CellActor> clickedCellActors, CellActor cellActor, ItemType firstItemType)
     {
-        if (clickedCellActors.Contains(cellActor)) return clickedCellActors;
+        if (clickedCellActors.Contains(cellActor)) 
+            return clickedCellActors;
 
         clickedCellActors.Add(cellActor);
 
@@ -196,20 +197,24 @@ public class CellManager : MonoBehaviour
         {
             List<CellActor> cellActors = item.Value;
 
-            for (int c = 0; c < cellActors.Count; c++)
+            bool isAnyEmpty = cellActors.Any(x => x.IsEmpty);
+            if (isAnyEmpty)
             {
-                for (int p = 1; p < cellActors.Count; p++)
+                for (int c1 = 0; c1 < cellActors.Count; c1++)
                 {
-                    CellActor cellActorTemp1 = cellActors[p - 1];
-                    CellActor cellActorTemp2 = cellActors[p];
-
-                    if (cellActorTemp1.IsEmpty && !cellActorTemp2.IsEmpty)
+                    for (int c2 = 1; c2 < cellActors.Count; c2++)
                     {
-                        CellItemActor cellItemActorTemp2 = cellActorTemp2.GetCellItemActor();
-                        cellActorTemp1.SetCellItemActor(cellItemActorTemp2);
+                        CellActor cellActorTemp1 = cellActors[c2 - 1];
+                        CellActor cellActorTemp2 = cellActors[c2];
 
-                        cellItemActorTemp2.Move(cellActorTemp1.GetPosition());
-                        cellActorTemp2.RemoveCellItem();
+                        if (cellActorTemp1.IsEmpty && !cellActorTemp2.IsEmpty)
+                        {
+                            CellItemActor cellItemActorTemp2 = cellActorTemp2.GetCellItemActor();
+                            cellActorTemp1.SetCellItemActor(cellItemActorTemp2);
+
+                            cellItemActorTemp2.Move(cellActorTemp1.GetPosition());
+                            cellActorTemp2.RemoveCellItem();
+                        }
                     }
                 }
             }

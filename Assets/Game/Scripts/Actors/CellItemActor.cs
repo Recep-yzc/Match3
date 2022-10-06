@@ -9,14 +9,10 @@ public class CellItemActor : MonoBehaviour
     [SerializeField] private SpriteRenderer imgBg;
 
     #region private
-    private ItemManager itemManager;
+    private CellItemDataSo cellItemData;
     #endregion
 
-    private void Awake()
-    {
-        itemManager = ItemManager.Instance;
-    }
-
+    public void SetCellItemData(CellItemDataSo cellItemData) => this.cellItemData = cellItemData;
     public void SetType(ItemType itemType) => ItemType = itemType;
 
     public void SetSprite(Sprite sprite) => imgBg.sprite = sprite;
@@ -25,7 +21,10 @@ public class CellItemActor : MonoBehaviour
 
     public void Move(Vector2 position)
     {
-        transform.DOMove(position, itemManager.CellItemData.MoveSpeed).SetSpeedBased().SetEase(itemManager.CellItemData.MoveEase);
+        transform.DOMove(position, cellItemData.MoveSpeed)
+            .SetSpeedBased()
+            .SetEase(cellItemData.MoveEase)
+            .SetLink(gameObject);
     }
 
     public void CustomDestroy()

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51eeeed0f88694942bc2ed00b1958477, type: 3}
   m_Name: CellDataSo
   m_EditorClassIdentifier: 
-  RowCount: 10
-  ColumnCount: 10
+  RowCount: 7
+  ColumnCount: 7
   CellActorPrefab: {fileID: 111710246727754046, guid: 1d2c69e018a393340883466d54b7b056,
     type: 3}
   CellScale: 0.5

@@ -3,10 +3,8 @@ using Game.Events;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemManager : MonoBehaviour
+public class CellItemSpawnManager : MonoBehaviour
 {
-    public static ItemManager Instance;
-
     IGameEventSystem gameEventSystem = new GameEventSystem();
 
     [Header("Data")]
@@ -26,16 +24,12 @@ public class ItemManager : MonoBehaviour
     {
         Listen(false);
     }
+
     private void Listen(bool status)
     {
         gameEventSystem.SaveEvent(GameEvents.CreateCellItemActor, status, CreateCellItemActor);
     }
     #endregion
-
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     private void CreateCellItemActor(object[] a)
     {
@@ -54,6 +48,7 @@ public class ItemManager : MonoBehaviour
 
             CellItemActor cellItemActorTemp = Instantiate(cellItemActorPrefab, cellItemParent);
 
+            cellItemActorTemp.SetCellItemData(CellItemData);
             cellItemActorTemp.SetType(itemTypeTemp);
             cellItemActorTemp.SetSprite(CellItemData.CellItemSprites[itemTypeTemp]);
             cellItemActorTemp.SetPosition(cellActorTemp.GetPosition());
