@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557c24f54f930464a82ed4c82a79c627, type: 3}
+  m_Name: CellItemDataSo
+  m_EditorClassIdentifier: 
+  MoveSpeed: 4
+  MoveEase:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.03866256
+      outSlope: 0.03866256
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.44859287
+    - serializedVersion: 3
+      time: 0.38598195
+      value: -0.06424536
+      inSlope: 0.38506138
+      outSlope: 0.38506138
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.108053125
+    - serializedVersion: 3
+      time: 0.8744135
+      value: 1.0676734
+      inSlope: 0.5203395
+      outSlope: 0.5203395
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.68536615
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -2.0578341
+      outSlope: -2.0578341
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31463385
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CellItemSprites:
+    keyData: 00000000010000000200000003000000
+    valueData:
+    - {fileID: 21300000, guid: 994294c583123aa499c7ece01a2d0f8f, type: 3}
+    - {fileID: 21300000, guid: 85c8afa9e3f8dba4fb914d859e1480a0, type: 3}
+    - {fileID: 21300000, guid: 5a38654020faa684084e1edbeef57f57, type: 3}
+    - {fileID: 21300000, guid: e63fae5b56a5de44990f751d90734653, type: 3}
