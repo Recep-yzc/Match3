@@ -7,6 +7,7 @@ namespace Game.Events
 
 
         public const string CreateCellItemActor = nameof(CreateCellItemActor);
+        public const string CreateCustomCellItemActor = nameof(CreateCustomCellItemActor);
 
 
         public const string ClickCellActor = nameof(ClickCellActor);

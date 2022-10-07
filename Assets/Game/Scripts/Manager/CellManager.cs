@@ -72,6 +72,8 @@ public class CellManager : MonoBehaviour
             StopCoroutine(scrollCoroutine);
         }
         scrollCoroutine = StartCoroutine(ScrollItems());
+
+        StartCoroutine(CreateCellItemActors());
     }
 
     private void SaveCellActor(object[] a)
@@ -140,8 +142,8 @@ public class CellManager : MonoBehaviour
                                 break;
                             }
                         }
-                    }     
-                    cellActorTemp.FetchNeighborCellActor(neighborCellActors);             
+                    }
+                    cellActorTemp.FetchNeighborCellActor(neighborCellActors);
                 }
             }
         }
@@ -149,7 +151,7 @@ public class CellManager : MonoBehaviour
 
     private List<CellActor> FindClickedCellNeighbor(ref List<CellActor> clickedCellActors, CellActor cellActor, ItemType firstItemType)
     {
-        if (clickedCellActors.Contains(cellActor)) 
+        if (clickedCellActors.Contains(cellActor))
             return clickedCellActors;
 
         clickedCellActors.Add(cellActor);
@@ -217,6 +219,24 @@ public class CellManager : MonoBehaviour
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private IEnumerator CreateCellItemActors()
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        foreach (var item in cellActorsVertical)
+        {
+            List<CellActor> cellActors = item.Value;
+            float key = item.Key;
+
+            int emptyCount = cellActors.Count(x => x.IsEmpty);
+            if (emptyCount > 0)
+            {
+                List<CellActor> emptyCellActors = cellActors.TakeLast(emptyCount).ToList();
+                gameEventSystem.Publish(GameEvents.CreateCustomCellItemActor, key, emptyCellActors);
             }
         }
     }

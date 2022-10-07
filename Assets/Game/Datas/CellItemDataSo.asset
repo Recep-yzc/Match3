@@ -12,45 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 557c24f54f930464a82ed4c82a79c627, type: 3}
   m_Name: CellItemDataSo
   m_EditorClassIdentifier: 
-  MoveSpeed: 3
+  MoveSpeed: 5
   MoveEase:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.03866256
-      outSlope: 0.03866256
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.44859287
-    - serializedVersion: 3
-      time: 0.30684987
-      value: -0.10480322
-      inSlope: 0.38506138
-      outSlope: 0.38506138
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.108053125
-    - serializedVersion: 3
-      time: 0.8049555
-      value: 1.0879447
-      inSlope: 0.5203395
-      outSlope: 0.5203395
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.68536615
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: -2.0578341
-      outSlope: -2.0578341
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0.31463385
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
