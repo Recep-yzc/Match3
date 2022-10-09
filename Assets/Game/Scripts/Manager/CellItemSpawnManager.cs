@@ -38,44 +38,37 @@ public class CellItemSpawnManager : MonoBehaviour
 
         for (int i = 0; i < cellActors.Count; i++)
         {
-            CellActor cellActorTemp = cellActors[i];
+            CellActor cellActor = cellActors[i];
 
-            CellItemActor cellItemActorTemp = Instantiate(CellItemData.CellItemActorPrefab, cellItemParent);
-            ItemType itemTypeTemp = GetRandomItemType();
+            ItemType itemType = GetRandomItemType();
+            Sprite sprite = CellItemData.CellItemSprites[itemType];
+            Vector2 position = cellActor.GetPosition();
+            Vector3 scale = cellActor.GetScale();
 
-            cellItemActorTemp.SetCellItemData(CellItemData);
-            cellItemActorTemp.SetType(itemTypeTemp);
-            cellItemActorTemp.SetSprite(CellItemData.CellItemSprites[itemTypeTemp]);
-            cellItemActorTemp.SetPosition(cellActorTemp.GetPosition());
-            cellItemActorTemp.SetScale(cellActorTemp.GetScale());
+            CellItemActor cellItemActor = CreateCellItemActor(CellItemData, itemType, sprite, position, scale);
 
-            cellActorTemp.SetCellItemActor(cellItemActorTemp);
+            cellActor.SetCellItemActor(cellItemActor);
         }
     }
 
     private void CreateCustomCellItemActor(object[] a)
     {
-        float key = (float)a[0];
-        List<CellActor> emptyCellActors = (List<CellActor>)a[1];
+        List<CellActor> emptyCellActors = (List<CellActor>)a[0];
 
         for (int i = 0; i < emptyCellActors.Count; i++)
         {
-            CellActor cellActorTemp = emptyCellActors[i];
+            CellActor cellActor = emptyCellActors[i];
 
-            CellItemActor cellItemActorTemp = Instantiate(CellItemData.CellItemActorPrefab, cellItemParent);
-            ItemType itemTypeTemp = GetRandomItemType();
-            Vector2 originalPosition = cellActorTemp.GetPosition();
-            Vector2 spawnPosition = new Vector2(originalPosition.x, originalPosition.y + 2);
+            ItemType itemType = GetRandomItemType();
+            Sprite sprite = CellItemData.CellItemSprites[itemType];
+            Vector2 position = cellActor.GetPosition();
+            Vector2 spawnPosition = new Vector2(position.x, position.y + 2);
+            Vector3 scale = cellActor.GetScale();
 
-            cellItemActorTemp.SetCellItemData(CellItemData);
-            cellItemActorTemp.SetType(itemTypeTemp);
-            cellItemActorTemp.SetSprite(CellItemData.CellItemSprites[itemTypeTemp]);
-            cellItemActorTemp.SetPosition(spawnPosition);
-            cellItemActorTemp.SetScale(cellActorTemp.GetScale());
+            CellItemActor cellItemActor = CreateCellItemActor(CellItemData, itemType, sprite, spawnPosition, scale);
+            cellItemActor.Move(position);
 
-            cellItemActorTemp.Move(originalPosition);
-
-            cellActorTemp.SetCellItemActor(cellItemActorTemp);
+            cellActor.SetCellItemActor(cellItemActor);
         }
     }
 
@@ -88,5 +81,18 @@ public class CellItemSpawnManager : MonoBehaviour
         rndType = Random.Range(minRndValue, maxRndValue);
 
         return (ItemType)rndType;
+    }
+
+    private CellItemActor CreateCellItemActor(CellItemDataSo cellItemData,ItemType itemType,Sprite sprite, Vector2 position, Vector3 scale)
+    {
+        CellItemActor cellItemActor = Instantiate(CellItemData.CellItemActorPrefab, cellItemParent);
+
+        cellItemActor.SetCellItemData(cellItemData);
+        cellItemActor.SetType(itemType);
+        cellItemActor.SetSprite(sprite);
+        cellItemActor.SetPosition(position);
+        cellItemActor.SetScale(scale);
+
+        return cellItemActor;
     }
 }

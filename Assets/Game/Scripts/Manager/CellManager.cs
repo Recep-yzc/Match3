@@ -12,10 +12,10 @@ public class CellManager : MonoBehaviour
     [Header("Data")]
     public CellDataSo CellData;
 
-    #region private
-    private Coroutine scrollCoroutine;
-    private int minDestroyCount = 2;
+    [Header("Properties")]
+    public int MinDestroyCount = 2;
 
+    #region private
     private List<CellActor> cellActors = new();
     private Dictionary<Vector2, CellActor> cellActorsWithPosition = new();
     private FloatCellActors cellActorsVertical = new();
@@ -35,7 +35,7 @@ public class CellManager : MonoBehaviour
     private void Listen(bool status)
     {
         gameEventSystem.SaveEvent(GameEvents.SaveCellActor, status, SaveCellActor);
-        gameEventSystem.SaveEvent(GameEvents.ClickCellActor, status, ClickCellActor);
+        gameEventSystem.SaveEvent(GameEvents.ClickCellActor, status, ClickedCellActor);
     }
 
     #endregion
@@ -55,25 +55,20 @@ public class CellManager : MonoBehaviour
         }
     }
 
-    private void ClickCellActor(object[] a)
+    private void ClickedCellActor(object[] a)
     {
         CellActor clickedCellActor = (CellActor)a[0];
 
         if (clickedCellActor.IsEmpty) return;
 
-        ItemType itemType = clickedCellActor.GetCellItemActor().ItemType;
-
         List<CellActor> clickedCellActors = new();
+        ItemType itemType = clickedCellActor.GetCellItemActor().ItemType;
+        
         FindClickedCellNeighbor(ref clickedCellActors, clickedCellActor, itemType);
-        DestroySameItems(clickedCellActors);
+        DestroyCellItemActors(clickedCellActors);
 
-        if (scrollCoroutine != null)
-        {
-            StopCoroutine(scrollCoroutine);
-        }
-        scrollCoroutine = StartCoroutine(ScrollItems());
-
-        StartCoroutine(CreateCellItemActors());
+        ScrollCellItemActors();
+        CreateCellItemActors();
     }
 
     private void SaveCellActor(object[] a)
@@ -120,21 +115,21 @@ public class CellManager : MonoBehaviour
     {
         for (int i = 0; i < cellActors.Count; i++)
         {
-            CellActor cellActorTemp = cellActors[i];
+            CellActor cellActor = cellActors[i];
 
-            foreach (var cellActor in cellActorsWithPosition)
+            foreach (var dictionary in cellActorsWithPosition)
             {
                 List<CellActor> neighborCellActors = new();
 
-                if (cellActorTemp == cellActor.Value)
+                if (cellActor == dictionary.Value)
                 {
-                    Vector2 v2 = cellActorTemp.GetPosition();
+                    Vector2 position = cellActor.GetPosition();
 
                     foreach (var neighborCellActor in cellActorsWithPosition)
                     {
                         for (int n = 0; n < Codes.neighborV2s.Length; n++)
                         {
-                            Vector2 key = v2 + (Codes.neighborV2s[n] * CellData.CellScale);
+                            Vector2 key = position + (Codes.neighborV2s[n] * CellData.CellScale);
 
                             if (neighborCellActor.Key == key)
                             {
@@ -143,7 +138,7 @@ public class CellManager : MonoBehaviour
                             }
                         }
                     }
-                    cellActorTemp.FetchNeighborCellActor(neighborCellActors);
+                    cellActor.FetchNeighborCellActor(neighborCellActors);
                 }
             }
         }
@@ -174,48 +169,46 @@ public class CellManager : MonoBehaviour
         return clickedCellActors;
     }
 
-    private void DestroySameItems(List<CellActor> clickedCellActors)
+    private void DestroyCellItemActors(List<CellActor> clickedCellActors)
     {
-        if (clickedCellActors.Count < minDestroyCount) return;
+        if (clickedCellActors.Count < MinDestroyCount) return;
 
         for (int i = 0; i < clickedCellActors.Count; i++)
         {
-            CellActor cellActorTemp = clickedCellActors[i];
+            CellActor cellActor = clickedCellActors[i];
 
-            if (!cellActorTemp.IsEmpty)
+            if (!cellActor.IsEmpty)
             {
-                CellItemActor cellItemActorTemp = cellActorTemp.GetCellItemActor();
-                cellItemActorTemp.CustomDestroy();
-                cellActorTemp.RemoveCellItem();
+                CellItemActor cellItemActor = cellActor.GetCellItemActor();
+                cellItemActor.CustomDestroy();
+                cellActor.RemoveCellItem();
             }
         }
     }
 
-    private IEnumerator ScrollItems()
+    private void ScrollCellItemActors()
     {
-        yield return new WaitForSeconds(0.1f);
-
-        foreach (var item in cellActorsVertical)
+        foreach (var floatCellActors in cellActorsVertical)
         {
-            List<CellActor> cellActors = item.Value;
+            List<CellActor> cellActors = floatCellActors.Value;
 
-            bool isAnyEmpty = cellActors.Any(x => x.IsEmpty);
-            if (isAnyEmpty)
+            bool isExistsEmpty = IsExistsEmpty(cellActors);
+            if (isExistsEmpty)
             {
                 for (int c1 = 0; c1 < cellActors.Count; c1++)
                 {
                     for (int c2 = 1; c2 < cellActors.Count; c2++)
                     {
-                        CellActor cellActorTemp1 = cellActors[c2 - 1];
-                        CellActor cellActorTemp2 = cellActors[c2];
+                        CellActor currentCellActor = cellActors[c2 - 1];
+                        CellActor nextCellActor = cellActors[c2];
 
-                        if (cellActorTemp1.IsEmpty && !cellActorTemp2.IsEmpty)
+                        if (currentCellActor.IsEmpty && !nextCellActor.IsEmpty)
                         {
-                            CellItemActor cellItemActorTemp2 = cellActorTemp2.GetCellItemActor();
-                            cellActorTemp1.SetCellItemActor(cellItemActorTemp2);
+                            CellItemActor nextCellItemActor = nextCellActor.GetCellItemActor();
+                            currentCellActor.SetCellItemActor(nextCellItemActor);
 
-                            cellItemActorTemp2.Move(cellActorTemp1.GetPosition());
-                            cellActorTemp2.RemoveCellItem();
+                            nextCellItemActor.Move(currentCellActor.GetPosition());
+                            nextCellActor.RemoveCellItem();
                         }
                     }
                 }
@@ -223,21 +216,35 @@ public class CellManager : MonoBehaviour
         }
     }
 
-    private IEnumerator CreateCellItemActors()
+    private void CreateCellItemActors()
     {
-        yield return new WaitForSeconds(0.1f);
-
-        foreach (var item in cellActorsVertical)
+        foreach (var floatCellActors in cellActorsVertical)
         {
-            List<CellActor> cellActors = item.Value;
-            float key = item.Key;
+            List<CellActor> cellActors = floatCellActors.Value;
 
             int emptyCount = cellActors.Count(x => x.IsEmpty);
             if (emptyCount > 0)
             {
                 List<CellActor> emptyCellActors = cellActors.TakeLast(emptyCount).ToList();
-                gameEventSystem.Publish(GameEvents.CreateCustomCellItemActor, key, emptyCellActors);
+                gameEventSystem.Publish(GameEvents.CreateCustomCellItemActor, emptyCellActors);
             }
         }
+    }
+
+    private bool IsExistsEmpty(List<CellActor> cellActors)
+    {
+        bool value = false;
+        for (int i = 0; i < cellActors.Count; i++)
+        {
+            CellActor cellActor = cellActors[i];
+
+            if (cellActor.IsEmpty)
+            {
+                value = true;
+                break;
+            }
+        }
+
+        return value;
     }
 }
